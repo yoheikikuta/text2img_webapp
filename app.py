@@ -1,4 +1,5 @@
 import streamlit as st
+from util import translate_text
 
 st.title("A text2img web application.")
 
@@ -19,7 +20,7 @@ if "target_text" not in st.session_state:
 st.session_state["source_text"] = st.text_input("翻訳する日本語の文章", st.session_state["source_text"])
 
 if st.button('英語に翻訳'):
-    st.session_state["target_text"] = "Translated: " + st.session_state["source_text"]
+    st.session_state["target_text"] = translate_text("EN", st.session_state["source_text"])
     st.session_state["target_text"] = st.text_input("if true: 翻訳された英語の文章", st.session_state["target_text"])
 else:
     st.session_state["target_text"] = st.text_input("if false: 翻訳された英語の文章", st.session_state["target_text"])
