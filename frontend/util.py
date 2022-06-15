@@ -1,13 +1,15 @@
-def call_text2img(text: str) -> str:
+import numpy as np
+
+
+def call_text2img(text: str) -> np.ndarray:
     """
     TODO: Replace this method with treating gerenerated images.
     """
     import requests
 
     response = requests.get("http://backend:80", params={"text": text})
-    result = response.json()["Hello"]
 
-    return result
+    return np.frombuffer(response.content).reshape(256,256*5,3)
 
 
 def translate_text(target: str, src_text: str) -> str:

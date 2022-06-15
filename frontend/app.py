@@ -26,6 +26,7 @@ else:
     st.session_state["target_text"] = st.text_input("if false: 翻訳された英語の文章", st.session_state["target_text"])
 
 if st.button("画像を生成"):
-    st.write("工事中: clicked " + st.session_state["target_text"] + call_text2img(st.session_state["target_text"]))
+    st.write("工事中: clicked " + st.session_state["target_text"])
+    st.image(call_text2img(st.session_state["target_text"]), caption="生成画像", clamp=True)
 else:
     st.write("工事中: not clicked " + st.session_state["target_text"])
