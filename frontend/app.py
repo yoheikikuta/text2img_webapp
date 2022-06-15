@@ -1,5 +1,5 @@
 import streamlit as st
-from util import translate_text
+from util import call_text2img, translate_text
 
 st.title("A text2img web application.")
 
@@ -26,6 +26,6 @@ else:
     st.session_state["target_text"] = st.text_input("if false: 翻訳された英語の文章", st.session_state["target_text"])
 
 if st.button("画像を生成"):
-    st.write("工事中: clicked " + st.session_state["target_text"])
+    st.write("工事中: clicked " + st.session_state["target_text"] + call_text2img(st.session_state["target_text"]))
 else:
     st.write("工事中: not clicked " + st.session_state["target_text"])

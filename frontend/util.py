@@ -1,3 +1,12 @@
+def call_text2img(text: str) -> str:
+    import requests
+
+    response = requests.get("http://backend:80")
+    result = response.json()["Hello"]
+
+    return result + text
+
+
 def translate_text(target: str, src_text: str) -> str:
     """Translates text into the target language.
 
