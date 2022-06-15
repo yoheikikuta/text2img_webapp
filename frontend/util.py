@@ -1,10 +1,13 @@
 def call_text2img(text: str) -> str:
+    """
+    TODO: Replace this method with treating gerenerated images.
+    """
     import requests
 
-    response = requests.get("http://backend:80")
+    response = requests.get("http://backend:80", params={"text": text})
     result = response.json()["Hello"]
 
-    return result + text
+    return result
 
 
 def translate_text(target: str, src_text: str) -> str:

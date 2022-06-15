@@ -6,10 +6,8 @@ app = FastAPI()
 
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+def create_generated_images(text:str) -> dict:
+    """
+    TODO: Replace this endpoint with Text2Img.
+    """
+    return {"Hello": text}
