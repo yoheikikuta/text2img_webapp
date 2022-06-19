@@ -21,12 +21,12 @@ st.session_state["source_text"] = st.text_input("翻訳する日本語の文章"
 
 if st.button('英語に翻訳'):
     st.session_state["target_text"] = translate_text("EN", st.session_state["source_text"])
-    st.session_state["target_text"] = st.text_input("if true: 翻訳された英語の文章", st.session_state["target_text"])
+    st.session_state["target_text"] = st.text_input("翻訳された英語の文章", st.session_state["target_text"])
 else:
-    st.session_state["target_text"] = st.text_input("if false: 翻訳された英語の文章", st.session_state["target_text"])
+    st.session_state["target_text"] = st.text_input("翻訳された英語の文章", st.session_state["target_text"])
 
 if st.button("画像を生成"):
-    st.write("工事中: clicked " + st.session_state["target_text"])
+    st.write("Target text: " + st.session_state["target_text"])
     st.image(call_text2img(st.session_state["target_text"]), caption="生成画像", clamp=True)
 else:
-    st.write("工事中: not clicked " + st.session_state["target_text"])
+    st.write("Target text: " + st.session_state["target_text"])
