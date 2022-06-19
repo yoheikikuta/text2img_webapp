@@ -46,6 +46,7 @@ class Text2ImgML:
         batch_size = 5
         upsample_temp = 0.997
 
+        ## Generate 64c64 images.
         tokens = self.model.tokenizer.encode(text)
         tokens, mask = self.model.tokenizer.padded_tokens_and_mask(tokens, self.options['text_ctx'])
 
@@ -70,9 +71,34 @@ class Text2ImgML:
             cond_fn=None,
         )[:batch_size]
         self.model.del_cache()
+        print("64x64 images", samples.shape)
 
-        # TODO: add upsampling step.
-        return self._convert_result_tensor_to_ndarray(samples)
+        ## Upsample to 256x256 images.
+        tokens = self.model_up.tokenizer.encode(text)
+        tokens, mask = self.model_up.tokenizer.padded_tokens_and_mask(tokens, self.options_up['text_ctx'])
+
+        model_kwargs = dict(
+            low_res=((samples+1)*127.5).round()/127.5 - 1,
+            tokens=th.tensor([tokens] * batch_size, device=self.device),
+            mask=th.tensor([mask] * batch_size, dtype=th.bool, device=self.device,),
+        )
+
+        self.model_up.del_cache()
+        up_shape = (batch_size, 3, self.options_up["image_size"], self.options_up["image_size"])
+        # ここの ddim_sample_loop でログなしでエラーになっている状況
+        up_samples = self.diffusion_up.ddim_sample_loop(
+            self.model_up,
+            up_shape,
+            noise=th.randn(up_shape, device=self.device) * upsample_temp,
+            device=self.device,
+            clip_denoised=True,
+            progress=True,
+            model_kwargs=model_kwargs,
+            cond_fn=None,
+        )[:batch_size]
+        self.model_up.del_cache()
+
+        return self._convert_result_tensor_to_ndarray(up_samples)
 
     def _model_fn(self, x_t, ts, **kwargs):
         guidance_scale = 3.0
