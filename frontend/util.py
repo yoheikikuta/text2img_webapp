@@ -9,7 +9,7 @@ def call_text2img(text: str) -> np.ndarray:
 
     response = requests.get("http://backend:80", params={"text": text})
 
-    return np.frombuffer(response.content).reshape(256,256*5,3)
+    return np.frombuffer(response.content, dtype='uint8').reshape(256,256*5,3)
 
 
 def translate_text(target: str, src_text: str) -> str:
