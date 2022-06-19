@@ -1,6 +1,5 @@
 import numpy as np
 import torch as th
-from glide_text2im.download import load_checkpoint
 from glide_text2im.model_creation import (
     create_model_and_diffusion,
     model_and_diffusion_defaults,
@@ -40,21 +39,13 @@ class Text2ImgML:
         self.model.load_state_dict(th.load('/model/model.pt', map_location=self.device))
         self.model_up.load_state_dict(th.load('/model/model_up.pt', map_location=self.device))
 
-    def predict(self, text:str) -> np.ndarray:
-        """
-        """
-        batch_size = 5
-        upsample_temp = 0.997
-
-        ## Generate 64c64 images.
+    def generate_64x64_tensor(self, text:str, batch_size:int=5) -> th.Tensor:
         tokens = self.model.tokenizer.encode(text)
         tokens, mask = self.model.tokenizer.padded_tokens_and_mask(tokens, self.options['text_ctx'])
 
-        # Create the classifier-free guidance tokens (empty)
         full_batch_size = batch_size * 2
         uncond_tokens, uncond_mask = self.model.tokenizer.padded_tokens_and_mask([], self.options['text_ctx'])
 
-        # Pack the tokens together into model kwargs.
         model_kwargs = dict(
             tokens=th.tensor([tokens] * batch_size + [uncond_tokens] * batch_size, device=self.device),
             mask=th.tensor([mask] * batch_size + [uncond_mask] * batch_size, dtype=th.bool, device=self.device,),
@@ -71,9 +62,12 @@ class Text2ImgML:
             cond_fn=None,
         )[:batch_size]
         self.model.del_cache()
-        print("64x64 images", samples.shape)
 
-        ## Upsample to 256x256 images.
+        return samples
+
+    def upscale_to_256x256_tensor(self, text:str, samples:th.Tensor, batch_size:int=5) -> th.Tensor:
+        upsample_temp = 0.997
+
         tokens = self.model_up.tokenizer.encode(text)
         tokens, mask = self.model_up.tokenizer.padded_tokens_and_mask(tokens, self.options_up['text_ctx'])
 
@@ -85,7 +79,6 @@ class Text2ImgML:
 
         self.model_up.del_cache()
         up_shape = (batch_size, 3, self.options_up["image_size"], self.options_up["image_size"])
-        # ここの ddim_sample_loop でログなしでエラーになっている状況
         up_samples = self.diffusion_up.ddim_sample_loop(
             self.model_up,
             up_shape,
@@ -98,7 +91,7 @@ class Text2ImgML:
         )[:batch_size]
         self.model_up.del_cache()
 
-        return self._convert_result_tensor_to_ndarray(up_samples)
+        return up_samples
 
     def _model_fn(self, x_t, ts, **kwargs):
         guidance_scale = 3.0
