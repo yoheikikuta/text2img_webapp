@@ -1,10 +1,10 @@
+from typing import Any
+
 import numpy as np
 import torch as th
 from glide_text2im.model_creation import (
-    create_model_and_diffusion,
-    model_and_diffusion_defaults,
-    model_and_diffusion_defaults_upsampler
-)
+    create_model_and_diffusion, model_and_diffusion_defaults,
+    model_and_diffusion_defaults_upsampler)
 
 
 class Text2ImgML:
@@ -15,7 +15,7 @@ class Text2ImgML:
         # model: text to 64x64 image
         self.options = model_and_diffusion_defaults()
         self.options['use_fp16'] = has_cuda
-        self.options['timestep_respacing'] = '20' # use 100 diffusion steps for fast sampling
+        self.options['timestep_respacing'] = '20' # change to larget value later, e.g., 100~500
         self.model, self.diffusion = create_model_and_diffusion(**self.options)
         self.model.eval()
         if has_cuda:
@@ -32,10 +32,7 @@ class Text2ImgML:
             self.model_up.convert_to_fp16()
         self.model_up.to(self.device)
 
-    def load(self) -> None:
-        """
-        When server is activated, load model weight.
-        """
+    def load_model(self) -> None:
         self.model.load_state_dict(th.load('/model/model.pt', map_location=self.device))
         self.model_up.load_state_dict(th.load('/model/model_up.pt', map_location=self.device))
 
@@ -93,7 +90,7 @@ class Text2ImgML:
 
         return up_samples
 
-    def _model_fn(self, x_t, ts, **kwargs):
+    def _model_fn(self, x_t:th.Tensor, ts:th.Tensor, **kwargs:Any) -> th.Tensor:
         guidance_scale = 3.0
 
         half = x_t[: len(x_t) // 2]

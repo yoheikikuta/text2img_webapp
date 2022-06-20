@@ -3,7 +3,7 @@ import numpy as np
 
 def call_text2img(text: str) -> np.ndarray:
     """
-    TODO: Replace this method with treating gerenerated images.
+    TODO: Fix hard coding of numpy array shape (at this moment this method assumes five images)
     """
     import requests
 

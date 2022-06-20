@@ -1,4 +1,5 @@
 import streamlit as st
+
 from util import call_text2img, translate_text
 
 st.title("A text2img web application.")
