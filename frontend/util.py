@@ -1,4 +1,13 @@
+import os
+
+import google.auth.transport.requests
+import google.oauth2.id_token
 import numpy as np
+
+URL = os.environ.get("BACKEND_URL")
+auth_req = google.auth.transport.requests.Request()
+id_token = google.oauth2.id_token.fetch_id_token(auth_req, URL)
+headers = {"Authorization": f"Bearer {id_token}"}
 
 
 def call_text2img(text: str) -> np.ndarray:
@@ -7,7 +16,7 @@ def call_text2img(text: str) -> np.ndarray:
     """
     import requests
 
-    response = requests.get("http://backend:80", params={"text": text})
+    response = requests.get(URL, params={"text": text}, headers=headers)
 
     return np.frombuffer(response.content, dtype='uint8').reshape(256,256*5,3)
 
