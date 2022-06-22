@@ -33,6 +33,7 @@ class Text2ImgML:
         self.model_up.to(self.device)
 
     def load_model(self) -> None:
+        print(f"The device of this machine is: {self.device}.")
         self.model.load_state_dict(th.load('/model/model.pt', map_location=self.device))
         self.model_up.load_state_dict(th.load('/model/model_up.pt', map_location=self.device))
 
