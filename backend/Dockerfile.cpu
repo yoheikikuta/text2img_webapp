@@ -1,0 +1,12 @@
+FROM python:3.10
+
+LABEL maintainer="diracdiego@gmail.com"
+
+RUN pip3 install --no-cache-dir fastapi uvicorn numpy git+https://github.com/openai/glide-text2im
+
+EXPOSE 80
+
+COPY ./app /app
+COPY ./model /model
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
