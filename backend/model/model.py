@@ -1,10 +1,12 @@
 from typing import Any
 
+import os
 import numpy as np
 import torch as th
 from glide_text2im.model_creation import (
     create_model_and_diffusion, model_and_diffusion_defaults,
     model_and_diffusion_defaults_upsampler)
+from google.cloud import storage
 
 
 class Text2ImgML:
@@ -33,9 +35,17 @@ class Text2ImgML:
         self.model_up.to(self.device)
 
     def load_model(self) -> None:
-        print(f"The device of this machine is: {self.device}.")
-        self.model.load_state_dict(th.load('/model/model.pt', map_location=self.device))
-        self.model_up.load_state_dict(th.load('/model/model_up.pt', map_location=self.device))
+        model_path = "/model/model.pt"
+        model_up_path = "/model/model_up.pt"
+
+        if not os.path.exists(model_path):
+            self._download_blob("text2img_model", "model.pt", model_path)
+
+        if not os.path.exists(model_up_path):
+            self._download_blob("text2img_model", "model_up.pt", model_up_path)
+
+        self.model.load_state_dict(th.load(model_path, map_location=self.device))
+        self.model_up.load_state_dict(th.load(model_up_path, map_location=self.device))
 
     def generate_64x64_tensor(self, text:str, batch_size:int=5) -> th.Tensor:
         tokens = self.model.tokenizer.encode(text)
@@ -109,3 +119,16 @@ class Text2ImgML:
         reshaped = scaled.permute(2, 0, 3, 1).reshape([samples.shape[2], -1, 3])
 
         return reshaped.numpy()
+
+    def _download_blob(self, bucket_name: str, source_blob_name: str, destination_file_name: str) -> None:
+        storage_client = storage.Client.create_anonymous_client()
+        bucket = storage_client.bucket(bucket_name)
+
+        blob = bucket.blob(source_blob_name)
+        blob.download_to_filename(destination_file_name)
+
+        print(
+            "Downloaded storage object {} from bucket {} to local file {}.".format(
+                source_blob_name, bucket_name, destination_file_name
+            )
+        )

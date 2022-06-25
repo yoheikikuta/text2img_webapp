@@ -2,7 +2,7 @@ FROM python:3.10
 
 LABEL maintainer="diracdiego@gmail.com"
 
-RUN pip3 install --no-cache-dir fastapi uvicorn numpy git+https://github.com/openai/glide-text2im
+RUN pip3 install --no-cache-dir google-cloud-storage fastapi uvicorn numpy git+https://github.com/openai/glide-text2im
 
 EXPOSE 80
 
