@@ -19,7 +19,7 @@ logger.setLevel(logging.DEBUG)
 logger.addHandler(stdout_handler)
 
 logger.info('Backend API is ready.')
-logger.info(f"The device of this machine is: {ml_model.self.device}.")
+logger.info(f"The device of this machine is: {ml_model.device}.")
 
 @app.get("/")
 def create_generated_images(text:str) -> bytes:
