@@ -54,10 +54,43 @@ resource "google_compute_instance" "default" {
   }
 
   metadata_startup_script = file("./service_setup.sh")
+}
 
-  #   service_account {
-  #     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-  #     email  = google_service_account.default.email
-  #     scopes = ["cloud-platform"]
-  #   }
+resource "google_cloud_run_service" "default" {
+  name     = "frontend"
+  location = "asia-northeast1"
+
+  template {
+    spec {
+      containers {
+        image = "asia.gcr.io/text2image-353214/frontend"
+        env {
+          name  = "BACKEND_URL"
+          value = "http://${google_compute_address.static.address}"
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  location = google_cloud_run_service.default.location
+  project  = google_cloud_run_service.default.project
+  service  = google_cloud_run_service.default.name
+
+  policy_data = data.google_iam_policy.noauth.policy_data
 }
