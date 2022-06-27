@@ -48,7 +48,7 @@ resource "google_compute_instance" "default" {
     install-nvidia-driver = "True"
   }
 
-  metadata_startup_script = "docker pull asia.gcr.io/text2image-353214/backend && docker run --restart=always --gpus all --name backend -p 80:80 asia.gcr.io/text2image-353214/backend"
+  metadata_startup_script = file("./service_setup.sh")
 
   #   service_account {
   #     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
