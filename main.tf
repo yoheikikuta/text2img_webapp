@@ -15,6 +15,7 @@ provider "google" {
   zone    = "asia-northeast1-a"
 }
 
+### backend configurations
 resource "google_compute_address" "static" {
   name   = "ipv4-address-for-backend-endpoint"
   region = "asia-east1"
@@ -56,6 +57,7 @@ resource "google_compute_instance" "default" {
   metadata_startup_script = file("./service_setup.sh")
 }
 
+### frontend configurations
 resource "google_cloud_run_service" "default" {
   name     = "frontend"
   location = "asia-northeast1"
@@ -93,4 +95,8 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   service  = google_cloud_run_service.default.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
+}
+
+output "cloud_run_url" {
+  value = google_cloud_run_service.default.status[0].url
 }
