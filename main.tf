@@ -8,27 +8,27 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("./text2image-353214-4ddcbd70f075.json")
+  credentials = file("${var.google_cloud_credential_file}")
 
-  project = "text2image-353214"
-  region  = "asia-northeast1"
-  zone    = "asia-northeast1-a"
+  project = var.google_cloud_project
+  region  = var.default_region
+  zone    = var.default_zone
 }
 
 ### backend configurations
 resource "google_compute_address" "static" {
   name   = "ipv4-address-for-backend-endpoint"
-  region = "asia-east1"
+  region = var.backend_resource_region
 }
 
 resource "google_compute_instance" "default" {
   name         = "backend"
-  machine_type = "n1-standard-4"
-  zone         = "asia-east1-a"
+  machine_type = var.backend_machine_type
+  zone         = "${var.backend_resource_region}-a"
   tags         = ["http-server"]
 
   guest_accelerator {
-    type  = "nvidia-tesla-t4"
+    type  = var.backend_machine_gpu
     count = 1
   }
   scheduling {
@@ -60,12 +60,12 @@ resource "google_compute_instance" "default" {
 ### frontend configurations
 resource "google_cloud_run_service" "default" {
   name     = "frontend"
-  location = "asia-northeast1"
+  location = var.frontend_location
 
   template {
     spec {
       containers {
-        image = "asia.gcr.io/text2image-353214/frontend"
+        image = var.frontend_gcr_image
         env {
           name  = "BACKEND_URL"
           value = "http://${google_compute_address.static.address}"
