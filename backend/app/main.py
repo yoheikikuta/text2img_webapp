@@ -25,10 +25,10 @@ logger.info(f"The device of this machine is: {ml_model.device}.")
 def create_generated_images(text:str) -> bytes:
     logger.info('API is called.')
     samples = ml_model.generate_64x64_tensor(text)
-    logger.info('Successfully generate 64x64 tensor.')
+    logger.info('Successfully generated 64x64 tensor.')
     up_samples = ml_model.upscale_to_256x256_tensor(text, samples)
-    logger.info('Successfully upscale 64x64 tensor to 256x256 tensor.')
+    logger.info('Successfully upscaled 64x64 tensor to 256x256 tensor.')
     img_arr = ml_model._convert_result_tensor_to_ndarray(up_samples)
-    logger.info('Successfully convert result tensor to ndarray.')
+    logger.info(f'Successfully converted result tensor to ndarray. Its shape is {img_arr.shape}')
 
     return Response(content=img_arr.tobytes(), media_type="image/png")
