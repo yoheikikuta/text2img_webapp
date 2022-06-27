@@ -54,7 +54,7 @@ resource "google_compute_instance" "default" {
     install-nvidia-driver = "True"
   }
 
-  metadata_startup_script = file("./service_setup.sh")
+  metadata_startup_script = replace(file("./service_setup.sh"), "GCR_IMAGE", var.backend_gcr_image)
 }
 
 ### frontend configurations

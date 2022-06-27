@@ -34,6 +34,11 @@ variable "backend_machine_gpu" {
   default = "nvidia-tesla-t4"
 }
 
+variable "backend_gcr_image" {
+  type    = string
+  default = "asia.gcr.io/text2image-353214/backend"
+}
+
 ### For frontend configurations
 variable "frontend_location" {
   type    = string
