@@ -15,6 +15,11 @@ provider "google" {
   zone    = "asia-northeast1-a"
 }
 
+resource "google_compute_address" "static" {
+  name   = "ipv4-address-for-backend-endpoint"
+  region = "asia-east1"
+}
+
 resource "google_compute_instance" "default" {
   name         = "backend"
   machine_type = "n1-standard-4"
@@ -40,7 +45,7 @@ resource "google_compute_instance" "default" {
     network = "default"
 
     access_config {
-      // Ephemeral public IP
+      nat_ip = google_compute_address.static.address
     }
   }
 
