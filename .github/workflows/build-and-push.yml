@@ -1,0 +1,32 @@
+name: Docker build and push image to GCR
+
+on:
+  push:
+    branches:
+    - main
+
+env:
+  GCP_REGION: asia-northeast1
+  BACKEND_IMAGE: asia.gcr.io/text2image-353214/backend:${{ github.sha }}
+  FRONTEND_IMAGE: asia.gcr.io/text2image-353214/frontend:${{ github.sha }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
+      - name: Regsiter gcloud as a Docker credential helper
+        run: gcloud auth configure-docker --quiet
+      - name: Build backend image
+        run: docker build -t ${{ env.BACKEND_IMAGE }} -f backend/Dockerfile .
+      - name: Build frontend image
+        run: docker build -t ${{ env.FRONTEND_IMAGE }} -f frontend/Dockerfile .
+      - name: Push the docker images to GCR
+        run: |
+          docker push ${{ env.BACKEND_IMAGE }}
+          docker push ${{ env.FRONTEND_IMAGE }}
