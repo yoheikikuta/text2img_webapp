@@ -6,7 +6,7 @@ RUN pip3 install --no-cache-dir google-cloud-storage fastapi uvicorn numpy git+h
 
 EXPOSE 80
 
-COPY ./app /app
-COPY ./model /model
+COPY backend/app /app
+COPY backend/model /model
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
