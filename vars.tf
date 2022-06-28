@@ -1,6 +1,6 @@
 variable "google_cloud_credential_file" {
   type    = string
-  default = "./text2image-353214-4ddcbd70f075.json"
+  default = "./credential.json"
 }
 
 variable "google_cloud_project" {
