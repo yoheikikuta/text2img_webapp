@@ -7,8 +7,8 @@ on:
 
 env:
   GCP_REGION: asia-northeast1
-  BACKEND_IMAGE: asia.gcr.io/text2image-353214/backend:${{ github.sha }}
-  FRONTEND_IMAGE: asia.gcr.io/text2image-353214/frontend:${{ github.sha }}
+  BACKEND_IMAGE: asia.gcr.io/text2image-353214/backend
+  FRONTEND_IMAGE: asia.gcr.io/text2image-353214/frontend
 
 jobs:
   build-and-push:
