@@ -17,7 +17,7 @@ class Text2ImgML:
         # model: text to 64x64 image
         self.options = model_and_diffusion_defaults()
         self.options['use_fp16'] = has_cuda
-        self.options['timestep_respacing'] = '500'
+        self.options['timestep_respacing'] = '500'  # For cpu, small value such as 20 is recommended.
         self.model, self.diffusion = create_model_and_diffusion(**self.options)
         self.model.eval()
         if has_cuda:
@@ -27,7 +27,7 @@ class Text2ImgML:
         # model_up: 64x64 to 256x256
         self.options_up = model_and_diffusion_defaults_upsampler()
         self.options_up['use_fp16'] = has_cuda
-        self.options_up['timestep_respacing'] = 'fast27' # use 27 diffusion steps for very fast sampling
+        self.options_up['timestep_respacing'] = '100' # # For cpu, 'fast27' is recommended.
         self.model_up, self.diffusion_up = create_model_and_diffusion(**self.options_up)
         self.model_up.eval()
         if has_cuda:
