@@ -3,7 +3,7 @@ A web application of a text2img model.
 
 ## For local (with cpu) environment
 Need to set the environment variable `$GCP_KEY_PATH` on your local machine.  
-Note that it takes dozens of minutes to generate images using cpu.
+Note that it takes dozens of minutes to generate images using cpu (model parameters should be changed to reduce the computation time).
 
 ```sh
 docker compose up --build
@@ -13,7 +13,7 @@ Then access `http://localhost:8501`.
 
 ## For GCP (with gpu) environment
 Need to set the google cloud credential json file that has enough authority.  
-Note that it takes a few minutes for backend server to be ready.
+Note that it takes several minutes for backend server to be ready.
 
 ```sh
 terraform plan
@@ -22,3 +22,13 @@ terraform destory
 ```
 
 Then access the URL shown as `cloud_run_url` on CLI.
+
+## Screenshot
+<p align="center">
+  <img src="https://imgur.com/TbUlZMQ.png">
+</p>
+
+## Copyright of pretrained models
+Pretrained models are originally from glide-text2im repository.  
+Copyright (c) 2021 OpenAI  
+Released under the MIT license: https://github.com/openai/glide-text2im/blob/69b530740eb6cef69442d6180579ef5ba9ef063e/LICENSE
