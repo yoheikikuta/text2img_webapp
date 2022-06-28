@@ -17,7 +17,7 @@ class Text2ImgML:
         # model: text to 64x64 image
         self.options = model_and_diffusion_defaults()
         self.options['use_fp16'] = has_cuda
-        self.options['timestep_respacing'] = '20' # change to larget value later, e.g., 100~500
+        self.options['timestep_respacing'] = '500'
         self.model, self.diffusion = create_model_and_diffusion(**self.options)
         self.model.eval()
         if has_cuda:
