@@ -6,7 +6,7 @@ services:
   frontend:
     build:
       context: ./frontend/.
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile
     image: text2img/frontend
     command: app.py
     ports:

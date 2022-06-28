@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "3.5.0"
+      version = "4.27.0"
     }
   }
 }
@@ -66,6 +66,9 @@ resource "google_cloud_run_service" "default" {
     spec {
       containers {
         image = var.frontend_gcr_image
+        ports {
+          container_port = 8501
+        }
         env {
           name  = "BACKEND_URL"
           value = "http://${google_compute_address.static.address}"
@@ -82,10 +85,8 @@ resource "google_cloud_run_service" "default" {
 
 data "google_iam_policy" "noauth" {
   binding {
-    role = "roles/run.invoker"
-    members = [
-      "allUsers",
-    ]
+    role    = "roles/run.invoker"
+    members = ["allUsers", ]
   }
 }
 

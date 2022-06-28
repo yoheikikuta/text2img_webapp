@@ -10,3 +10,15 @@ docker compose up --build
 ```
 
 Then access `http://localhost:8501`.
+
+## For GCP (with gpu) environment
+Need to set the google cloud credential json file that has enough authority.  
+Note that it takes a few minutes for backend server to be ready.
+
+```sh
+terraform plan
+terraform apply
+terraform destory
+```
+
+Then access the URL shown as `cloud_run_url` on CLI.
