@@ -16,6 +16,7 @@ Need to set the google cloud credential json file as `google_cloud_credential_fi
 Note that it takes several minutes for backend server to be ready (because of model download and load).
 
 ```sh
+terraform init
 terraform plan
 terraform apply
 terraform destory
